@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Continuous Horizontal Scroll</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:black;
+        }
+
+        /* SCROLL LENGTH */
+        .scroll-container{
+            height:400vh;
+        }
+
+        /* PINNED SECTION */
+        .section{
+            position:sticky;
+            top:0;
+            height:100vh;
+            overflow:hidden;
+        }
+
+        /* SKY LAYER */
+        .sky{
+            position:absolute;
+            width:100%;
+            height:100%;
+            background:url("https://images6.alphacoders.com/692/692056.png") center/cover no-repeat;
+            z-index:1;
+        }
+
+        /* LAND LAYER */
+        .land{
+    position:absolute;
+    bottom:-150px;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    height:100%;
+    background:url("https://i.ibb.co/4Zhf6v48/Chat-GPT-Image-Mar-4-2026-02-40-08-PM.png")
+               bottom center / contain no-repeat;
+    z-index:4;
+
+    pointer-events:none;   /* ⭐ important */
+}
+
+        /* CARD TRACK */
+        .track{
+            position:absolute;
+            top:50%;
+            transform:translateY(-50%);
+            display:flex;
+            gap:60px;
+            z-index:3;
+            will-change:transform;
+        }
+
+       /* PREMIUM HOVER FOR ALL CARDS */
+
+.card{
+    width:260px;
+    height:400px;
+    border-radius:20px;
+    overflow:hidden;
+    flex-shrink:0;
+    transition:all 0.6s cubic-bezier(.17,.67,.34,1.5);
+}
+
+.card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:all 0.6s cubic-bezier(.17,.67,.34,1.5);
+}
+
+.card:hover{
+    transform:translateY(-20px) scale(1.05);
+}
+
+.card:hover img{
+    transform:scale(1.15);
+    opacity:0.65;
+    mix-blend-mode:overlay;
+}
+
+        .chick:hover img{
+    opacity:0.65;
+    mix-blend-mode:overlay;
+}
+
+
+/* FULLSCREEN WAVE OVERLAY */
+.wave-overlay{
+    position:fixed;
+    inset:0;
+    z-index:2;            /* higher than everything */
+    pointer-events:none;
+    overflow:hidden;       /* prevents scroll glitch */
+}
+
+/* circular wave */
+.wave{
+    position:absolute;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:white;
+    transform:translate(-50%, -50%) scale(0);
+    opacity:0.9;
+}
+
+/* smooth fade */
+.wave-overlay.active{
+    opacity:1;
+    transition:opacity 0.4s ease;
+}
+
+    </style>
+</head>
+<body>
+
+
+
+<div class="scroll-container">
+
+    <div class="section">
+
+        <div class="sky"></div>
+
+        <div class="wave-overlay" id="waveOverlay">
+            <div class="wave" id="wave"></div>
+        </div>
+
+        <div class="land"></div>
+
+        <div class="track" id="track">
+
+            <div class="card">
+                <img src="https://wallpapers.com/images/hd/your-name-mitsuha-sitting-at-night-gedouv4pgvi2f5ba.jpg">
+            </div>
+
+            <div class="card">
+                <img src="https://thumbs.dreamstime.com/z/breathtaking-ai-generated-artwork-showcases-mesmerizing-valley-towering-snow-capped-mountains-cascading-waterfall-359894544.jpg">
+            </div>
+
+            <div class="card chick">
+                <img src="https://c4.wallpaperflare.com/wallpaper/409/709/142/anime-landscape-cherry-blossom-bridge-waterfall-wallpaper-preview.jpg">
+            </div>
+
+            <div class="card">
+                <img src="https://c4.wallpaperflare.com/wallpaper/464/87/593/building-anime-city-hd-wallpaper-preview.jpg">
+            </div>
+
+            <!-- Duplicate cards for smooth flow -->
+            <div class="card">
+                <img src="https://wallpapers.com/images/hd/kimi-no-na-wa-sky-high-c2g60de1v6ab3bur.jpg">
+            </div>
+
+            <div class="card">
+                <img src="https://wallpapers.com/images/hd/naruto-village-1280-x-720-wallpaper-9564njtlu0tmzmwg.jpg">
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<script>
+
+    const track = document.getElementById("track");
+
+    window.addEventListener("scroll", ()=>{
+
+        const scrollY = window.scrollY;
+        const maxScroll = window.innerHeight * 3;
+        const progress = scrollY / maxScroll;
+
+        // Move track from right to left continuously
+        const moveDistance = progress * 2000;
+        track.style.transform = `translate(${window.innerWidth - moveDistance}px, -50%)`;
+
+
+    });
+
+    const cards = document.querySelectorAll(".card");
+const overlay = document.getElementById("waveOverlay");
+const wave = document.getElementById("wave");
+const sky = document.querySelector(".sky");
+
+cards.forEach(card => {
+
+    card.addEventListener("click", (e) => {
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+        const imgSrc = card.querySelector("img").src;
+
+        const x = e.clientX;
+        const y = e.clientY;
+
+        wave.style.left = x + "px";
+        wave.style.top = y + "px";
+
+        overlay.classList.add("active");
+
+        wave.animate([
+            { transform: "translate(-50%, -50%) scale(0)", opacity: 0.9 },
+            { transform: "translate(-50%, -50%) scale(150)", opacity: 0 }
+        ], {
+            duration: 900,
+            easing: "cubic-bezier(.17,.67,.34,1)"
+        });
+
+        setTimeout(()=>{
+            sky.style.background = `url(${imgSrc}) center/cover no-repeat`;
+        }, 400);
+
+        setTimeout(()=>{
+            overlay.classList.remove("active");
+        }, 900);
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
